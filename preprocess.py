@@ -3,6 +3,7 @@ import cv2
 import argparse
 import numpy as np
 import os
+from src.img_utils.foreground_extractor import *
 
 
 def parse_args():
@@ -16,9 +17,9 @@ def parse_args():
 
 
 # TODO: FIx cannot substract background
-def extract_background(img: np.array, backsub):
-    fg_mask = backsub.apply(img)
-    return cv2.bitwise_and(img, img, mask=fg_mask)
+# def extract_background(img: np.array, backsub):
+#     fg_mask = backsub.apply(img)
+#     return cv2.bitwise_and(img, img, mask=fg_mask)
 
 
 def prepare_dataset(dataset_path, dest_path, algo="KNN"):
@@ -33,7 +34,8 @@ def prepare_dataset(dataset_path, dest_path, algo="KNN"):
                 # print(os.path.join(full_label_dir_path, img_path))
                 img = cv2.imread(os.path.join(full_label_dir_path, img_path))
                 # print(img)
-                img_substract = extract_background(img, backsub)
+                # img_substract = extract_foreground_contour(img)
+                img_substract = extract_foreground_morphology(img,k_size=(4, 4))
                 # print(img_substract)
                 dest_dir = os.path.join(dest_path, full_label_dir_path)
                 os.makedirs(dest_dir,exist_ok=True)
